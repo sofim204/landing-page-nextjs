@@ -2,18 +2,57 @@ import { NextResponse } from "next/server";
 
 import prisma from "../../../../prisma/client";
 
-export async function GET() {
-    const posts = await prisma.post.findMany();
+import { formatDate, responseOut } from "../../helper/helper";
 
-    return NextResponse.json(
-        {
-            success: true,
-            status: 200,
-            message: "List Data Posts",
-            data: posts
+export async function GET() {
+    // -->select all
+    // const posts = await prisma.post.findMany();
+    // -->select some field
+    const posts = await prisma.post.findMany({
+        select: {
+            title: true,
+            content: true,
+            createdAt: true
         },
-        {
-            status: 200
+    });
+
+    const formattedPosts = posts.map(post => ({
+        ...post,
+        createdAt: formatDate(post.createdAt),
+        // updatedAt: formatDate(post.updatedAt),
+    }));
+
+    // return NextResponse.json(
+    //     {
+    //         success: true,
+    //         status: 200,
+    //         message: "List Data Posts",
+    //         data: formattedPosts
+    //     },
+    //     {
+    //         status: 200
+    //     }
+    // )
+    return responseOut(true, 200, "List Data Posts", formattedPosts);
+}
+
+export async function POST(request) {
+    const { title, content } = await request.json();
+
+    const post = await prisma.post.create({
+        data: {
+            title: title,
+            content: content
         }
-    )
+    });
+
+    // return NextResponse.json(
+    //     {
+    //         success: true,
+    //         status: 201,
+    //         message: "Post created!",
+    //         data: post
+    //     }, { status: 201 }
+    // );
+    return responseOut(true, 201, "Post Created!", post);
 }
