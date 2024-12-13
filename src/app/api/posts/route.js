@@ -12,6 +12,11 @@ export async function GET() {
             content: true,
             createdAt: true
         },
+        orderBy: [
+            {
+                id: 'desc',
+            },
+        ]
     });
 
     const formattedPosts = posts.map(post => ({
