@@ -1,5 +1,3 @@
-import { NextResponse } from "next/server";
-
 import prisma from "../../../../prisma/client";
 
 import { formatDate, responseOut } from "../../helper/helper";
@@ -19,20 +17,8 @@ export async function GET() {
     const formattedPosts = posts.map(post => ({
         ...post,
         createdAt: formatDate(post.createdAt),
-        // updatedAt: formatDate(post.updatedAt),
     }));
 
-    // return NextResponse.json(
-    //     {
-    //         success: true,
-    //         status: 200,
-    //         message: "List Data Posts",
-    //         data: formattedPosts
-    //     },
-    //     {
-    //         status: 200
-    //     }
-    // )
     return responseOut(true, 200, "List Data Posts", formattedPosts);
 }
 
@@ -46,13 +32,5 @@ export async function POST(request) {
         }
     });
 
-    // return NextResponse.json(
-    //     {
-    //         success: true,
-    //         status: 201,
-    //         message: "Post created!",
-    //         data: post
-    //     }, { status: 201 }
-    // );
     return responseOut(true, 201, "Post Created!", post);
 }
