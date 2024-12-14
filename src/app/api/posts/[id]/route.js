@@ -27,9 +27,9 @@ import { formatDate, responseOut } from "../../../helper/helper";
 // }
 
 // improvement from next js 15
-export async function GET(request, context) {
-    const params = await context.params; // Await params explicitly here
-    const id = parseInt(params.id);
+export async function GET(request, { params }) {
+    const parameters = await params; // Await params explicitly here
+    const id = parseInt(parameters.id);
 
     // checking if input is not a
     if (isNaN(id)) {
