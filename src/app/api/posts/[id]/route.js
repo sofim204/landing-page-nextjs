@@ -68,6 +68,20 @@ export async function PATCH(request, { params }) {
 
     const { title, content } = await request.json();
 
+    // check data
+    const getData = await prisma.post.findUnique({
+        select: {
+            id: true
+        },
+        where: {
+            id
+        }
+    });
+
+    if(!getData) {
+        return responseOut(false, 404, "Data Not Found", null);
+    }
+
     // update data
     const updatePost = await prisma.post.update({
         where: {
@@ -85,4 +99,32 @@ export async function PATCH(request, { params }) {
     }
 
     return responseOut(true, 200, "Post Updated", updatePost); 
+}
+
+export async function DELETE(request, { params }) {
+    const parameters = await params;
+    const id = parseInt(parameters.id);
+
+    // check data
+    const getData = await prisma.post.findUnique({
+        select: {
+            id: true
+        },
+        where: {
+            id
+        }
+    });
+
+    if(!getData) {
+        return responseOut(false, 404, "Data Not Found", null);
+    }
+
+    // delete post
+    await prisma.post.delete({
+        where: {
+            id,
+        }
+    });
+
+    return responseOut(true, 200, "Post Deleted", null); 
 }
