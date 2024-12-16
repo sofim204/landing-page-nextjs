@@ -31,7 +31,7 @@ export async function GET(request, { params }) {
     const parameters = await params; // Await params explicitly here
     const id = parseInt(parameters.id);
 
-    // checking if input is not a
+    // checking if input is not a number
     if (isNaN(id)) {
         return responseOut(false, 400, "Invalid ID", null);
     }
@@ -55,4 +55,34 @@ export async function GET(request, { params }) {
     post.createdAt = formatDate(post.createdAt);
 
     return responseOut(true, 200, "Detail Data Post", post);
+}
+
+export async function PATCH(request, { params }) {
+    const parameters = await params; // Await params explicitly here
+    const id = parseInt(parameters.id);
+
+    // checking if input is not a number
+    if (isNaN(id)) {
+        return responseOut(false, 400, "Invalid ID", null);
+    }
+
+    const { title, content } = await request.json();
+
+    // update data
+    const updatePost = await prisma.post.update({
+        where: {
+            id,
+        },
+        data : {
+            title: title,
+            content: content,
+            updatedAt: new Date()
+        },
+    });
+
+    if(!updatePost) {
+        return responseOut(false, 400, "Failed to Update Post", null);
+    }
+
+    return responseOut(true, 200, "Post Updated", updatePost); 
 }
